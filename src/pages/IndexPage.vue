@@ -119,7 +119,7 @@ export default {
         weather.value = {
           temperature: 22,
           condition: "Partly Cloudy",
-          location: "Your Location",
+          location: "This location",
           wind: 12,
           humidity: 65,
         };
