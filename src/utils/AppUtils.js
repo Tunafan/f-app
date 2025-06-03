@@ -157,12 +157,12 @@ export function mustacheValidator(val) {
 } // mustacheValidator()
 
 /**
- * Return the initials of the client name
+ * Return the initials of the users name
  *
  * @param {string} name
  * @returns {string}
  */
-export function getClientInitials(name) {
+export function getUserInitials(name) {
   if (!name) {
     return "";
   }
@@ -201,4 +201,4 @@ export function getClientInitials(name) {
   const secondLetter = rest.length > 0 ? rest[rest.length - 1][0] : "";
 
   return `${firstLetter}${secondLetter}`;
-} // getClientInitials()
+} // getUserInitials()

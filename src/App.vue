@@ -10,7 +10,6 @@ import RefreshPageSpinner from "components/UI/RefreshPageSpinner";
 import { Platform } from "quasar";
 import { useMobileMicrosoftAuth } from "src/composables/auth";
 import { useCacheCleaner } from "src/composables/cacheCleaner";
-import { useNativeAppUpdates } from "src/composables/native-app-updates";
 import Auth from "src/mixins/Auth";
 import Interactions from "src/mixins/Interactions";
 import ServiceWorkerUpdate from "src/mixins/ServiceWorkerUpdate";
@@ -24,7 +23,6 @@ export default {
   mixins: [ServiceWorkerUpdate, Interactions, Auth],
 
   setup() {
-    const { initializeNativeAppUpdateFlow } = useNativeAppUpdates();
     const { initMobileMicrosoftAuthentication } = useMobileMicrosoftAuth();
     const { startCacheCleaner, stopCacheCleaner } = useCacheCleaner();
 

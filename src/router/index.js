@@ -4,7 +4,6 @@ import { get, isEmpty } from 'lodash';
 import { notifyWarning } from 'src/composables/interactions';
 import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router';
 
-import { useNativeAppUpdates } from '../composables/native-app-updates';
 import { userRoles } from '../utils/AppUtils';
 import routes from './routes';
 
@@ -109,7 +108,6 @@ export default ({ store }) => {
       store.dispatch('auth/changeLoaderState', false);
     }
 
-    const { showAppUpdateBanner, shouldShowAppUpdateBanner, updateApp } = useNativeAppUpdates();
 
     if (shouldShowAppUpdateBanner() && !to.path.includes('/run/')) {
       const appUpdateInfo = get(store, ['state', 'nativeAppUpdates', 'appUpdateInfo'], {});
