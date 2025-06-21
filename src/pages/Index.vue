@@ -1,16 +1,27 @@
 <template>
   <q-page class="flex column q-pa-md">
     <div class="welcome-section q-mb-lg">
-      <h4 class="q-mb-sm">Hello {{ userName || "Fisher" }}, we love you!</h4>
+      <h4 class="q-mb-sm">
+        Hello {{ userName || "Angler" }}, we love you!
+      </h4>
       <p>Check out the expansion menu on the left for navigation.</p>
     </div>
 
     <q-card class="weather-card q-mb-lg">
       <q-card-section>
-        <div class="text-h6">Weather Information</div>
-        <div v-if="loading">Loading weather data...</div>
-        <div v-else-if="weatherError">{{ weatherError }}</div>
-        <div v-else-if="weather" class="weather-info">
+        <div class="text-h6">
+          Weather Information
+        </div>
+        <div v-if="loading">
+          Loading weather data...
+        </div>
+        <div v-else-if="weatherError">
+          {{ weatherError }}
+        </div>
+        <div
+          v-else-if="weather"
+          class="weather-info"
+        >
           <div class="row items-center">
             <q-icon
               :name="getWeatherIcon(weather.condition)"
@@ -18,7 +29,9 @@
               class="q-mr-md"
             />
             <div>
-              <div class="text-h5">{{ weather.temperature }}°C</div>
+              <div class="text-h5">
+                {{ weather.temperature }}°C
+              </div>
               <div>{{ weather.condition }}</div>
               <div>{{ weather.location }}</div>
             </div>
@@ -33,15 +46,22 @@
 
     <q-card class="recent-activity">
       <q-card-section>
-        <div class="text-h6">Recent Activity</div>
+        <div class="text-h6">
+          Recent Activity
+        </div>
         <q-list>
-          <q-item v-for="(activity, index) in recentActivities" :key="index">
+          <q-item
+            v-for="(activity, index) in recentActivities"
+            :key="index"
+          >
             <q-item-section avatar>
               <q-icon :name="activity.icon" />
             </q-item-section>
             <q-item-section>
               <q-item-label>{{ activity.title }}</q-item-label>
-              <q-item-label caption>{{ activity.description }}</q-item-label>
+              <q-item-label caption>
+                {{ activity.description }}
+              </q-item-label>
             </q-item-section>
           </q-item>
         </q-list>
@@ -61,6 +81,8 @@ export default {
     const weather = ref(null);
     const loading = ref(true);
     const weatherError = ref(null);
+    console.log(supabase);
+    
 
     const recentActivities = ref([
       {

@@ -4,7 +4,9 @@
       <div class="auth-container">
         <div class="auth-card">
           <div class="text-center q-mb-lg">
-            <h3 class="text-weight-bold">Fisher App</h3>
+            <h3 class="text-weight-bold">
+              Fisher App
+            </h3>
           </div>
           <router-view />
         </div>

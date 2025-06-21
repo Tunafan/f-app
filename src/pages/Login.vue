@@ -1,8 +1,13 @@
 <template>
   <div>
-    <h5 class="text-center q-mb-md">Log In</h5>
+    <h5 class="text-center q-mb-md">
+      Log In
+    </h5>
 
-    <q-form @submit="handleLogin" class="q-gutter-md">
+    <q-form
+      class="q-gutter-md"
+      @submit="handleLogin"
+    >
       <q-input
         v-model="email"
         label="Email"
@@ -18,7 +23,7 @@
         outlined
         :rules="[(val) => !!val || 'Password is required']"
       >
-        <template v-slot:append>
+        <template #append>
           <q-icon
             :name="isPwd ? 'visibility_off' : 'visibility'"
             class="cursor-pointer"
@@ -41,7 +46,9 @@
     <div class="text-center q-mt-md">
       <p>
         Don't have an account?
-        <router-link to="/auth/register">Sign Up</router-link>
+        <router-link to="/auth/register">
+          Sign Up
+        </router-link>
       </p>
     </div>
   </div>
