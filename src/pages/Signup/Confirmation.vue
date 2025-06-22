@@ -9,7 +9,13 @@
           v-if="confirmed"
           class="q-mt-md text-positive"
         >
-          Your email has been confirmed! You can now log in.
+          Your email has been confirmed! You can now log in here:
+          <q-btn
+            to="/login"
+            label="Login"
+            color="primary"
+            class="q-ml-sm"
+          />
         </div>
         <div
           v-else
@@ -29,7 +35,6 @@ import { notifyNegative } from 'src/composables/interactions'
 const confirmed = ref(false)
 
 onMounted(() => {
-  // Supabase sends tokens in the URL hash (after #)
   const hash = window.location.hash
   if (hash) {
     const params = Object.fromEntries(new URLSearchParams(hash.slice(1)))

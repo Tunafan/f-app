@@ -46,7 +46,7 @@
     <div class="text-center q-mt-md">
       <p>
         Don't have an account?
-        <router-link to="/auth/register">
+        <router-link to="/signup">
           Sign Up
         </router-link>
       </p>
@@ -58,7 +58,8 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { supabase } from "src/boot/supabase";
-import { useQuasar } from "quasar";
+import { notifyNegative, notifySuccess } from "src/composables/interactions";
+import { useUserStore } from "src/store/users";
 
 export default {
   name: "LoginPage",
@@ -68,7 +69,7 @@ export default {
     const isPwd = ref(true);
     const loading = ref(false);
     const router = useRouter();
-    const $q = useQuasar();
+    const userStore = useUserStore();
 
     const handleLogin = async () => {
       try {
@@ -80,13 +81,12 @@ export default {
 
         if (error) throw error;
 
+        await userStore.fetchUser();
+
+        notifySuccess("Login successful!");
         router.push("/");
       } catch (error) {
-        $q.notify({
-          color: "negative",
-          message: error.message || "Failed to log in",
-          icon: "error",
-        });
+        notifyNegative(error.message || "Failed to log in");
       } finally {
         loading.value = false;
       }

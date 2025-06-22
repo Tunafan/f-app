@@ -29,6 +29,7 @@
             label="Sign Up"
             type="submit"
             color="primary"
+            autocomplete="email"
           />
         </q-card-actions>
       </q-form>
@@ -43,18 +44,24 @@ import { notifyNegative, notifySuccess } from 'src/composables/interactions'
 
 const email = ref('')
 const password = ref('')
+const loading = ref(false)
 
 async function onSignup() {
+  loading.value = true
   const { error } = await supabase.auth.signUp({
     email: email.value,
     password: password.value
   })
   if (error) {
     notifyNegative(error.message)
-  } else {
-    notifySuccess('Signup successful! Please check your email for confirmation.')
-    email.value = ''
-    password.value = ''
+    loading.value = false
+    return
   }
+
+  notifySuccess('Signup successful! Please check your email for confirmation.')
+  setTimeout(() => {
+    window.location.href = '/login'
+  }, 1000)
+  loading.value = false
 }
 </script>
