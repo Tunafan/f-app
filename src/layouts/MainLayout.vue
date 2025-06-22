@@ -136,8 +136,8 @@
 
 <script>
 import { ref } from "vue";
-import { supabase } from "src/boot/supabase";
 import { useRouter } from "vue-router";
+import { onLogout } from 'src/utils/authUtils'
 
 export default {
   name: "MainLayout",
@@ -146,8 +146,7 @@ export default {
     const leftDrawerOpen = ref(false);
 
     async function logout() {
-      await supabase.auth.signOut();
-      router.push("/");
+      await onLogout(router)
     }
     function goToAccount() {
       router.push("/account");
