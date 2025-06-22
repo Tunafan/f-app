@@ -167,7 +167,7 @@ async function onSubmitForm() {
 
   try {
     const { data: { session } } = await supabase.auth.getSession()
-    const response = await fetch(`${FUNCTIONS_URL}/functions/v1/add-fishing-location`, {
+    const response = await fetch(`${FUNCTIONS_URL}add-fishing-location`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

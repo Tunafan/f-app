@@ -138,7 +138,7 @@ async function onSubmitForm() {
 
   try {
     const { data: { session } } = await supabase.auth.getSession()
-    const response = await fetch(`${FUNCTIONS_URL}/functions/v1/add-shop`, {
+    const response = await fetch(`${FUNCTIONS_URL}add-shop`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

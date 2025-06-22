@@ -187,7 +187,7 @@ async function getUserGear() {
     }
     const accessToken = session.access_token
 
-    const response = await fetch(`${FUNCTIONS_URL}/get-user-gear`, {
+    const response = await fetch(`${FUNCTIONS_URL}get-user-gear`, {
       method: 'GET',
       headers: {
       'Authorization': `Bearer ${accessToken}`
@@ -219,7 +219,7 @@ async function addGear() {
     }
     const accessToken = session.access_token
 
-    const response = await fetch(`${FUNCTIONS_URL}/add-gear`, {
+    const response = await fetch(`${FUNCTIONS_URL}add-gear`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -268,7 +268,7 @@ async function unlinkUserGear(idx) {
     }
     const accessToken = session.access_token
 
-    const response = await fetch(`${FUNCTIONS_URL}/unlink-user-gear`, {
+    const response = await fetch(`${FUNCTIONS_URL}unlink-user-gear`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
