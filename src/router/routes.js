@@ -19,6 +19,7 @@ const routes = [
       { path: "packing-list", component: () => import("pages/PackingList.vue"), meta: { requiresAuth: true }},
       { path: "my-gear", component: () => import("pages/MyGear.vue"), meta: { requiresAuth: true } },
       { path: "guides", component: () => import("pages/Guides.vue"), meta: { requiresAuth: true } },
+      { path: "account", component: () => import("pages/Account.vue"), meta: { requiresAuth: true } }
     ],
   },
   {
