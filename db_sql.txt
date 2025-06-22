@@ -1,0 +1,100 @@
+-- WARNING: This schema is for context only and is not meant to be run.
+-- Table order and constraints may not be valid for execution.
+
+CREATE TABLE public.gear (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  name character varying NOT NULL,
+  pic json,
+  description character varying,
+  price double precision,
+  CONSTRAINT gear_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.gear_collections (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  owned_by uuid NOT NULL,
+  CONSTRAINT gear_collections_pkey PRIMARY KEY (id),
+  CONSTRAINT gear_collections_owned_by_fkey FOREIGN KEY (owned_by) REFERENCES public.users(id)
+);
+CREATE TABLE public.locations (
+  id uuid NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  owned_by uuid NOT NULL,
+  coordinates ARRAY NOT NULL,
+  name character varying,
+  public boolean,
+  is_deleted boolean DEFAULT false,
+  CONSTRAINT locations_pkey PRIMARY KEY (id),
+  CONSTRAINT locations_owned_by_fkey FOREIGN KEY (owned_by) REFERENCES public.users(id)
+);
+CREATE TABLE public.packing_items (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  packing_list_id uuid,
+  name character varying NOT NULL DEFAULT ''::character varying,
+  category text,
+  quantity numeric,
+  is_checked boolean,
+  description character varying,
+  gear_id uuid,
+  CONSTRAINT packing_items_pkey PRIMARY KEY (id),
+  CONSTRAINT packing_items_gear_id_fkey FOREIGN KEY (gear_id) REFERENCES public.gear(id),
+  CONSTRAINT packing_items_packing_list_id_fkey FOREIGN KEY (packing_list_id) REFERENCES public.packing_lists(id)
+);
+CREATE TABLE public.packing_lists (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  user_id uuid,
+  name character varying NOT NULL DEFAULT ''::character varying,
+  description character varying,
+  updated_at date,
+  updated_by uuid,
+  is_deleted boolean,
+  trip_date date,
+  CONSTRAINT packing_lists_pkey PRIMARY KEY (id),
+  CONSTRAINT packing_lists_updated_by_fkey FOREIGN KEY (updated_by) REFERENCES public.users(id),
+  CONSTRAINT packing_lists_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id)
+);
+CREATE TABLE public.shops (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  country_code text NOT NULL DEFAULT ''::text,
+  coordinates ARRAY NOT NULL,
+  phone numeric,
+  email character varying,
+  name character varying NOT NULL,
+  website character varying,
+  CONSTRAINT shops_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.user_gear (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  user uuid DEFAULT auth.uid(),
+  gear uuid,
+  CONSTRAINT user_gear_pkey PRIMARY KEY (id),
+  CONSTRAINT user_gear_gear_fkey FOREIGN KEY (gear) REFERENCES public.gear(id),
+  CONSTRAINT user_gear_user_fkey FOREIGN KEY (user) REFERENCES public.users(id)
+);
+CREATE TABLE public.users (
+  id uuid NOT NULL DEFAULT gen_random_uuid() UNIQUE,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  name text,
+  active boolean NOT NULL DEFAULT true,
+  nickname character varying,
+  email_address character varying NOT NULL UNIQUE,
+  is_deleted boolean NOT NULL DEFAULT false,
+  CONSTRAINT users_pkey PRIMARY KEY (id)
+);
+create or replace function public.handle_new_auth_user()
+returns trigger as $$
+begin
+  insert into public.users (id, email_address)
+  values (new.id, new.email);
+  return new;
+end;
+$$ language plpgsql security definer;
+
+create trigger on_auth_user_created
+after insert on auth.users
+for each row execute procedure public.handle_new_auth_user();
