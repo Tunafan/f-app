@@ -18,7 +18,45 @@
           round
           dense
           icon="person"
-        />
+          aria-label="User menu"
+        >
+          <q-menu
+            anchor="top right"
+            self="top right"
+            fit
+            auto-close
+          >
+            <q-list style="min-width: 150px">
+              <q-item
+                clickable
+                @click="goToAccount"
+              >
+                <q-item-section avatar>
+                  <q-icon name="account_circle" />
+                </q-item-section>
+                <q-item-section>Account</q-item-section>
+              </q-item>
+              <q-item
+                clickable
+                @click="goToHelp"
+              >
+                <q-item-section avatar>
+                  <q-icon name="help_outline" />
+                </q-item-section>
+                <q-item-section>Help</q-item-section>
+              </q-item>
+              <q-item
+                clickable
+                @click="logout"
+              >
+                <q-item-section avatar>
+                  <q-icon name="logout" />
+                </q-item-section>
+                <q-item-section>Logout</q-item-section>
+              </q-item>
+            </q-list>
+          </q-menu>
+        </q-btn>
       </q-toolbar>
     </q-header>
 
@@ -72,7 +110,7 @@
           clickable
         >
           <q-item-section avatar>
-            <q-icon name="fishing" />
+            <q-icon name="phishing" />
           </q-item-section>
           <q-item-section>My Gear</q-item-section>
         </q-item>
@@ -98,17 +136,34 @@
 
 <script>
 import { ref } from "vue";
+import { supabase } from "src/boot/supabase";
+import { useRouter } from "vue-router";
 
 export default {
   name: "MainLayout",
   setup() {
+    const router = useRouter();
     const leftDrawerOpen = ref(false);
+
+    async function logout() {
+      await supabase.auth.signOut();
+      router.push("/");
+    }
+    function goToAccount() {
+      router.push("/account");
+    }
+    function goToHelp() {
+      router.push("/help");
+    }
 
     return {
       leftDrawerOpen,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
+      logout,
+      goToAccount,
+      goToHelp
     };
   },
 };
