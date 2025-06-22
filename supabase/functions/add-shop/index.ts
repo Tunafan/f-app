@@ -1,15 +1,19 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts"
+import { serve } from 'https://deno.land/std@0.224.0/http/server.ts'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS, GET"
+function corsHeaders() {
+  return {
+    'Access-Control-Allow-Origin': '*', // Or specify your frontend URL for more security
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS'
+  }
 }
 
-Deno.serve(async (req) => {
-  // Handle preflight (OPTIONS) requests
-  if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders })
+serve(async (req) => {
+  // Handle CORS preflight
+  if (req.method === 'OPTIONS') {
+    return new Response('ok', { headers: corsHeaders() })
   }
 
   try {
@@ -18,12 +22,21 @@ Deno.serve(async (req) => {
     const ip = req.headers.get("x-forwarded-for") || "unknown"
 
     // Get JWT (if sent by client)
-    const authHeader = req.headers.get("authorization")
+    const authHeader = req.headers.get("authorization") || ""
+    const token = authHeader.replace('Bearer ', '')
     let user = null
-    if (authHeader && authHeader.startsWith("Bearer ")) {
-      const jwt = authHeader.slice(7)
-      // Optionally decode JWT here to get user info (requires a JWT library)
-      user = jwt // or decode it for more info
+
+    // Use Supabase client to get user info if token is present
+    if (token) {
+      const supabase = createClient(
+        Deno.env.get("SUPABASE_URL")!,
+        Deno.env.get("SUPABASE_ANON_KEY")!,
+        { global: { headers: { Authorization: `Bearer ${token}` } } }
+      )
+      const { data: { user: supaUser }, error: userError } = await supabase.auth.getUser()
+      if (!userError && supaUser) {
+        user = supaUser
+      }
     }
 
     const logContext = {
@@ -35,36 +48,31 @@ Deno.serve(async (req) => {
     console.log("add-shop invoked with information:", JSON.stringify(logContext))
 
     if (!name || !coordinates || coordinates.length !== 2) {
-      return new Response(JSON.stringify({ error: "Missing required fields" }), { status: 400, headers: corsHeaders })
+      return new Response(JSON.stringify({ error: "Missing required fields" }), { status: 400, headers: corsHeaders() })
     }
 
-    const response = await fetch(
-      `${Deno.env.get("SUPABASE_URL")}/rest/v1/shops`,
-      {
-        method: "POST",
-        headers: {
-          "apikey": Deno.env.get("SUPABASE_ANON_KEY")!,
-          "Authorization": `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!}`,
-          "Content-Type": "application/json",
-          "Prefer": "return=representation"
-        },
-        body: JSON.stringify([{ name, email, phone, website, country_code, coordinates }])
-      }
+    // Insert shop into the shops table using Supabase client (recommended)
+    const supabaseService = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     )
-    const data = await response.json()
 
-    if (data.error) {
-      return new Response(JSON.stringify({ error: data.error }), { status: 500, headers: corsHeaders })
+    const { error: insertError } = await supabaseService
+      .from('shops')
+      .insert([{ name, email, phone, website, country_code, coordinates }])
+
+    if (insertError) {
+      return new Response(JSON.stringify({ error: insertError.message }), { status: 500, headers: corsHeaders() })
     }
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
-      headers: corsHeaders,
+      headers: corsHeaders(),
     })
   } catch (error) {
     return new Response(JSON.stringify({ error: error.message }), {
       status: 400,
-      headers: corsHeaders,
+      headers: corsHeaders(),
     })
   }
 })

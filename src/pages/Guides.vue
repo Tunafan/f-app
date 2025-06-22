@@ -6,7 +6,8 @@
           <div class="col-12 col-md-6">
             <h5>Common expressions used at sea</h5>
             <q-list bordered>
-              <q-item v-for="(expression, idx) in expressions" 
+              <q-item
+                v-for="(expression, idx) in expressions" 
                 :key="idx"
               >
                 <q-item-section>
@@ -23,7 +24,7 @@
                 :key="idx" 
                 clickable 
                 @click="openVideo(video)"
-             >
+              >
                 <q-item-section>
                   <q-icon 
                     name="play_circle" 
