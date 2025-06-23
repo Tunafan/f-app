@@ -2,9 +2,8 @@
   <q-page class="flex column q-pa-md">
     <div class="welcome-section q-mb-lg">
       <h4 class="q-mb-sm">
-        Hello {{ userName || "Angler" }}, we love you!
+        Howdy, {{ nickname || "Angler" }}, good to have you!
       </h4>
-      <p>Check out the expansion menu on the left for navigation.</p>
     </div>
 
     <q-card class="weather-card q-mb-lg">
@@ -32,13 +31,14 @@
               <div class="text-h5">
                 {{ weather.temperature }}°C
               </div>
-              <div>{{ weather.condition }}</div>
               <div>{{ weather.location }}</div>
             </div>
           </div>
           <div class="q-mt-sm">
-            <div>Wind: {{ weather.wind }} km/h</div>
+            <div>Wind: {{ weather.wind }} m/h</div>
             <div>Humidity: {{ weather.humidity }}%</div>
+            <div>Dewpoint: {{ weather.dewPoint }} °C</div>
+            <div>Pressure: {{ weather.pressure }} hPa</div>
           </div>
         </div>
       </q-card-section>
@@ -70,105 +70,81 @@
   </q-page>
 </template>
 
-<script>
+<script setup>
 import { ref, onMounted } from "vue";
 import { supabase } from "src/boot/supabase";
+import { fetchWeather, getWeatherIcon } from "src/utils/weather";
 
-export default {
-  name: "IndexPage",
-  setup() {
-    const userName = ref(null);
-    const weather = ref(null);
-    const loading = ref(true);
-    const weatherError = ref(null);
-    console.log(supabase);
-    
+const nickname = ref(null);
+const weather = ref(null);
+const loading = ref(true);
+const weatherError = ref(null);
 
-    const recentActivities = ref([
-      {
-        icon: "place",
-        title: "New fishing spot added",
-        description: "Lake Superior - North Shore",
-      },
-      {
-        icon: "shopping_bag",
-        title: "New gear shop discovered",
-        description: "Fisher's Paradise - 2.5km away",
-      },
-      {
-        icon: "check_box",
-        title: "Packing list updated",
-        description: "Weekend Trip - 3 items added",
-      },
-    ]);
-
-    const getWeatherIcon = (condition) => {
-      const conditionLower = condition.toLowerCase();
-      if (conditionLower.includes("sun") || conditionLower.includes("clear"))
-        return "wb_sunny";
-      if (conditionLower.includes("cloud")) return "cloud";
-      if (conditionLower.includes("rain")) return "grain";
-      if (conditionLower.includes("snow")) return "ac_unit";
-      if (
-        conditionLower.includes("storm") ||
-        conditionLower.includes("thunder")
-      )
-        return "flash_on";
-      return "cloud";
-    };
-
-    const getCurrentUser = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (user) {
-        const { data } = await supabase
-          .from("profiles")
-          .select("full_name")
-          .eq("id", user.id)
-          .single();
-
-        if (data) {
-          userName.value = data.full_name;
-        }
-      }
-    };
-
-    const getWeatherData = async () => {
-      try {
-        // In a real app, you would get the user's location and then fetch weather data
-        // For now, we'll use mock data
-        weather.value = {
-          temperature: 22,
-          condition: "Partly Cloudy",
-          location: "Your Location",
-          wind: 12,
-          humidity: 65,
-        };
-      } catch (error) {
-        console.error(error);
-        weatherError.value =
-          "Failed to load weather data. Please enable location services.";
-      } finally {
-        loading.value = false;
-      }
-    };
-
-    onMounted(() => {
-      getCurrentUser();
-      getWeatherData();
-    });
-
-    return {
-      userName,
-      weather,
-      loading,
-      weatherError,
-      recentActivities,
-      getWeatherIcon,
-    };
+const recentActivities = ref([
+  {
+    icon: "place",
+    title: "New fishing spot added",
+    description: "Lake Superior - North Shore",
   },
-};
+  {
+    icon: "shopping_bag",
+    title: "New gear shop discovered",
+    description: "Fisher's Paradise - 2.5km away",
+  },
+  {
+    icon: "check_box",
+    title: "Packing list updated",
+    description: "Weekend Trip - 3 items added",
+  },
+]);
+
+async function getCurrentUser() {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (user) {
+    const { data: userData } = await supabase
+      .from("users")
+      .select("nickname")
+      .eq("id", user.id)
+      .single();
+    if (userData && userData.nickname) {
+      nickname.value = userData.nickname;
+    }
+  }
+}
+
+async function getWeatherData() {
+  try {
+    await new Promise((resolve) => {
+      navigator.geolocation.getCurrentPosition(
+        async (pos) => {
+          const lat = pos.coords.latitude;
+          const lon = pos.coords.longitude;
+          weather.value = await fetchWeather(lat, lon);
+          resolve();
+        },
+        async () => {
+          weather.value = await fetchWeather(55.6761, 12.5683);
+          weatherError.value =
+            "Location sharing denied. Showing weather for Copenhagen.";
+          resolve();
+        }
+      );
+    });
+  } catch (error) {
+    console.error(error);
+    weatherError.value =
+      "Failed to load weather data. Please enable location services.";
+  } finally {
+    loading.value = false;
+  }
+}
+
+onMounted(() => {
+  getCurrentUser();
+  getWeatherData();
+});
 </script>
 
 <style scoped>

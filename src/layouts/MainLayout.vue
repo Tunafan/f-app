@@ -17,6 +17,20 @@
           flat
           round
           dense
+          :icon="weather ? getWeatherIcon(weather.condition) : 'cloud_queue'"
+          :label="weather ? weather.temperature + '°C' : ''"
+          style="margin-right: 8px;"
+        >
+          <q-tooltip v-if="weather">
+            {{ weather.condition }}<br>
+            {{ weather.temperature }}°C
+          </q-tooltip>
+        </q-btn>
+
+        <q-btn
+          flat
+          round
+          dense
           icon="person"
           aria-label="User menu"
         >
@@ -135,15 +149,18 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { onLogout } from 'src/utils/authUtils'
+import { fetchWeather, getWeatherIcon } from 'src/utils/weather';
+import { notifyNegative } from "src/composables/interactions";
 
 export default {
   name: "MainLayout",
   setup() {
     const router = useRouter();
     const leftDrawerOpen = ref(false);
+    const weather = ref(null);
 
     async function logout() {
       await onLogout(router)
@@ -155,6 +172,26 @@ export default {
       router.push("/help");
     }
 
+    async function updateWeather() {
+      try {
+        navigator.geolocation.getCurrentPosition(async pos => {
+          const { latitude, longitude } = pos.coords;
+          weather.value = await fetchWeather(latitude, longitude);
+        }, async () => {
+          // fallback: Copenhagen
+          weather.value = await fetchWeather(55.6761, 12.5683);
+          notifyNegative("Failed to fetch your location, using default.");
+        });
+      } catch (error) {
+        notifyNegative("Failed to fetch weather data, using default location.");
+        notifyNegative(error.message || "Weather data unavailable");
+      }
+    }
+
+    onMounted(() => {
+      updateWeather();
+    });
+
     return {
       leftDrawerOpen,
       toggleLeftDrawer() {
@@ -162,7 +199,9 @@ export default {
       },
       logout,
       goToAccount,
-      goToHelp
+      goToHelp,
+      weather,
+      getWeatherIcon
     };
   },
 };
