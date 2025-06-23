@@ -65,3 +65,6 @@ Denne proces har ligeledes understreget betydningen af grundig planlægning og e
 SCRUM har været meget brugbar og relevant, Supabase og Vue har været gode for udviklergruppen i forståelse og fleksibilitet, og Quasar giver gode byggesten til umiddelbart både UI og UX.
 Desuden lagde vi ud med Google Maps men har siden lagt om til Leaflet, som er open source. Det har givet os mere kodearbejde og et ældre look på Map, men vi ønskede at gå uden om Google til en start.
 Dette skal genovervejes, fordi det, vi gerne vil slå os på, er innovation og flot design, hvilket Leaflet i denne nuværende udgave ikke er.
+
+Alt i alt har vi ramt inden for skiven rent teknologisk og har fat i nogle gode værktøjer.
+Der er heldigvis endnu plads til forbedringer i både proces, design, teamsammensætning og techstack
