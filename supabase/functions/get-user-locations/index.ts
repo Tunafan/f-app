@@ -1,0 +1,40 @@
+import { serve } from 'https://deno.land/std@0.224.0/http/server.ts'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+function corsHeaders() {
+  return {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS"
+  }
+}
+
+serve(async (req) => {
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { status: 200, headers: corsHeaders() });
+  }
+
+  const supabase = createClient(
+    Deno.env.get('SUPABASE_URL')!,
+    Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+  )
+
+  const authHeader = req.headers.get('Authorization') || ''
+  const jwt = authHeader.replace('Bearer ', '')
+  const { data: { user }, error: userError } = await supabase.auth.getUser(jwt)
+  if (userError || !user) {
+    return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: corsHeaders() })
+  }
+
+  const { data, error } = await supabase
+    .from('locations')
+    .select('*')
+    .eq('owned_by', user.id)
+    .eq('is_deleted', false)
+
+  if (error) {
+    return new Response(JSON.stringify({ error: error.message }), { status: 400, headers: corsHeaders() })
+  }
+
+  return new Response(JSON.stringify(data), { status: 200, headers: corsHeaders() })
+})

@@ -18,13 +18,15 @@ CREATE TABLE public.gear_collections (
   CONSTRAINT gear_collections_owned_by_fkey FOREIGN KEY (owned_by) REFERENCES public.users(id)
 );
 CREATE TABLE public.locations (
-  id uuid NOT NULL,
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
   created_at timestamp with time zone NOT NULL DEFAULT now(),
   owned_by uuid NOT NULL,
   coordinates ARRAY NOT NULL,
   name character varying,
   public boolean,
   is_deleted boolean DEFAULT false,
+  photo_url text,
+  is_private boolean DEFAULT false,
   CONSTRAINT locations_pkey PRIMARY KEY (id),
   CONSTRAINT locations_owned_by_fkey FOREIGN KEY (owned_by) REFERENCES public.users(id)
 );
@@ -39,8 +41,8 @@ CREATE TABLE public.packing_items (
   description character varying,
   gear_id uuid,
   CONSTRAINT packing_items_pkey PRIMARY KEY (id),
-  CONSTRAINT packing_items_gear_id_fkey FOREIGN KEY (gear_id) REFERENCES public.gear(id),
-  CONSTRAINT packing_items_packing_list_id_fkey FOREIGN KEY (packing_list_id) REFERENCES public.packing_lists(id)
+  CONSTRAINT packing_items_packing_list_id_fkey FOREIGN KEY (packing_list_id) REFERENCES public.packing_lists(id),
+  CONSTRAINT packing_items_gear_id_fkey FOREIGN KEY (gear_id) REFERENCES public.gear(id)
 );
 CREATE TABLE public.packing_lists (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
@@ -53,8 +55,8 @@ CREATE TABLE public.packing_lists (
   is_deleted boolean,
   trip_date date,
   CONSTRAINT packing_lists_pkey PRIMARY KEY (id),
-  CONSTRAINT packing_lists_updated_by_fkey FOREIGN KEY (updated_by) REFERENCES public.users(id),
-  CONSTRAINT packing_lists_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id)
+  CONSTRAINT packing_lists_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id),
+  CONSTRAINT packing_lists_updated_by_fkey FOREIGN KEY (updated_by) REFERENCES public.users(id)
 );
 CREATE TABLE public.shops (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
@@ -73,8 +75,8 @@ CREATE TABLE public.user_gear (
   user uuid DEFAULT auth.uid(),
   gear uuid,
   CONSTRAINT user_gear_pkey PRIMARY KEY (id),
-  CONSTRAINT user_gear_gear_fkey FOREIGN KEY (gear) REFERENCES public.gear(id),
-  CONSTRAINT user_gear_user_fkey FOREIGN KEY (user) REFERENCES public.users(id)
+  CONSTRAINT user_gear_user_fkey FOREIGN KEY (user) REFERENCES public.users(id),
+  CONSTRAINT user_gear_gear_fkey FOREIGN KEY (gear) REFERENCES public.gear(id)
 );
 CREATE TABLE public.users (
   id uuid NOT NULL DEFAULT gen_random_uuid() UNIQUE,
