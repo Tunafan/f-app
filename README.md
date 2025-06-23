@@ -7,7 +7,7 @@ Fisher's best friend in an app built on Quasar, Vue, and Supabase using edge fun
 npm install
 ```
 
-### Start the app in development mode (hot-code reloading, error reporting, etc.)
+### Start the app in development mode
 ```bash
 npm run dev
 ```
