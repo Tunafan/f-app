@@ -4,21 +4,17 @@ Fisher's best friend in an app built on Quasar, Vue, and Supabase using edge fun
 
 ## Install the dependencies
 ```bash
-yarn
-# or
 npm install
 ```
 
 ### Start the app in development mode (hot-code reloading, error reporting, etc.)
 ```bash
-quasar dev
+npm run dev
 ```
 
 
 ### Lint the files
 ```bash
-yarn lint
-# or
 npm run lint
 ```
 
@@ -28,5 +24,19 @@ npm run lint
 quasar build
 ```
 
-### Customize the configuration
-See [Configuring quasar.config.js](https://v2.quasar.dev/quasar-cli-vite/quasar-config-js).
+
+### Edge functions
+If you want to add new functions to the project the setup is as follows:
+```bash
+cd ./supabase/functions
+mkdir name-of-function
+cd name-of-function
+touch index.ts
+```
+
+Then, code your function until ready.
+When ready, 
+```bash
+cd ../../..
+npx supabase functions deploy name-of-function
+```
