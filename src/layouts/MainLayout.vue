@@ -22,7 +22,7 @@
           style="margin-right: 8px;"
         >
           <q-tooltip v-if="weather">
-            {{ weather.condition }}<br>
+            {{ weather.pressure }} hPa<br>
             {{ weather.temperature }}°C
           </q-tooltip>
         </q-btn>

@@ -1,4 +1,4 @@
-const API_KEY = 'qLNiiBPlN4CVuqzFYzx7dw7P5JmN72H7'
+const API_KEY = import.meta.env.VITE_WEATHER_API_KEY
 
 
 export function getWeatherIcon(code) {
