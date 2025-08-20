@@ -165,7 +165,7 @@ const filteredGear = computed(() => {
   )
 })
 
-onMounted(async () => {
+onMounted( () => {
   const cached = localStorage.getItem('gearList')
   if (cached) {
     try {
