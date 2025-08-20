@@ -11,7 +11,7 @@ function corsHeaders() {
 }
 
 serve(async (req) => {
-  // Handle CORS preflight
+  // CORS preflight
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders() })
   }
@@ -21,12 +21,10 @@ serve(async (req) => {
 
     const ip = req.headers.get("x-forwarded-for") || "unknown"
 
-    // Get JWT (if sent by client)
     const authHeader = req.headers.get("authorization") || ""
     const token = authHeader.replace('Bearer ', '')
     let user = null
 
-    // Use Supabase client to get user info if token is present
     if (token) {
       const supabase = createClient(
         Deno.env.get("SUPABASE_URL")!,
@@ -51,7 +49,6 @@ serve(async (req) => {
       return new Response(JSON.stringify({ error: "Missing required fields" }), { status: 400, headers: corsHeaders() })
     }
 
-    // Insert shop into the shops table using Supabase client (recommended)
     const supabaseService = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
