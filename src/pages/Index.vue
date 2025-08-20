@@ -53,6 +53,8 @@
           <q-item
             v-for="(activity, index) in recentActivities"
             :key="index"
+            clickable
+            :to="activity.link"
           >
             <q-item-section avatar>
               <q-icon :name="activity.icon" />
@@ -83,18 +85,21 @@ const weatherError = ref(null);
 const recentActivities = ref([
   {
     icon: "place",
-    title: "New fishing spot added",
-    description: "Lake Superior - North Shore",
+    title: "Ny lokation tilføjet",
+    description: "Esrom Sø",
+    link: "/map",
   },
   {
     icon: "shopping_bag",
-    title: "New gear shop discovered",
-    description: "Fisher's Paradise - 2.5km away",
+    title: "Nærmeste fiskeudstyrsbutik",
+    description: "Chum Bucket - 2.5km væk",
+    link: "/map",
   },
   {
     icon: "check_box",
     title: "Packing list updated",
-    description: "Weekend Trip - 3 items added",
+    description: "Pakkeliste Norge - 3 ting mangler",
+    link: "/packing-list",
   },
 ]);
 

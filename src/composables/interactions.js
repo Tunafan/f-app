@@ -85,12 +85,12 @@ const useDialog = () => {
   /**
    * Opens dialog window with component settled inside
    *
-   * @param {Object} component - vue component instance
-   * @param {Object?} props - object with props we want to set in the component
-   * @param {Function?} onOk - callback on emit 'ok'
-   * @param {Function?} onCancel - callback on emit 'cancel'
-   * @param {Function?} onDismiss - callback on emit 'dismiss'
-   * @param {Object?} opts - Object with dialog options
+   * @param {Object} component
+   * @param {Object?} props 
+   * @param {Function?} onOk 
+   * @param {Function?} onCancel 
+   * @param {Function?} onDismiss
+   * @param {Object?} opts
    *
    */
   const openComponentDialog = (component, props, onOk, onCancel, onDismiss, opts = {}) => {

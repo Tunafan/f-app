@@ -116,7 +116,7 @@
           </q-item>
         </q-list>
         <q-infinite-scroll
-          :offset="100"
+          :offset="200"
           :disable="itemsToShow >= filteredGear.length"
           @load="loadMoreItems"
         />
@@ -165,7 +165,7 @@ const filteredGear = computed(() => {
   )
 })
 
-onMounted(() => {
+onMounted(async () => {
   const cached = localStorage.getItem('gearList')
   if (cached) {
     try {
@@ -255,7 +255,7 @@ async function addGear() {
 async function unlinkUserGear(idx) {
   const gear = gearList.value[idx]
   if (!gear || !gear.user_gear_id) {
-    notifyNegative('Could not determine which gear to unlink.')
+    notifyNegative('Could not determine which gear to unlink. Try again')
     return
   }
   loading.value = true
