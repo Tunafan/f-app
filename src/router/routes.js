@@ -13,7 +13,7 @@ const routes = [
         component: () => import("src/pages/Signup/Confirmation.vue"),
         meta: { requiresGuest: true }
       },
-      { path: "login", component: () => import("src/pages/login.vue"), meta: { requiresGuest: true } },
+      { path: "login", component: () => import("src/pages/Login.vue"), meta: { requiresGuest: true } },
       { path: "", component: () => import("src/pages/Index.vue"), meta: { requiresAuth: true } },
       { path: "map", component: () => import("src/pages/Map.vue"), meta: { requiresAuth: true } },
       { path: "packing-list", component: () => import("pages/PackingList.vue"), meta: { requiresAuth: true }},
