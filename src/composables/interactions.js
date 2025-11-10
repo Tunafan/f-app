@@ -15,6 +15,7 @@ const notification = (type, message, options = {}) => {
 const notifyNegative = (message, opts = {}) => {
   const options = {
     timeout: 0,
+    progress: true,
     actions: [
       {
         icon: 'close',
@@ -29,7 +30,8 @@ const notifyNegative = (message, opts = {}) => {
 
 const notifyWarning = (message, opts = {}) => {
   const options = {
-    timeout: 0,
+    timeout: 5000,
+    progress: true,
     actions: [
       {
         icon: 'close',
@@ -44,6 +46,7 @@ const notifyWarning = (message, opts = {}) => {
 
 const notifySuccess = (message, opts = {}) => {
   const options = {
+    timeout: 5000,
     progress: true,
     ...opts,
   };

@@ -153,7 +153,7 @@ import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { onLogout } from 'src/utils/authUtils'
 import { fetchWeather, getWeatherIcon } from 'src/utils/weather';
-import { notifyNegative } from "src/composables/interactions";
+import { notifyNegative, notifyWarning } from "src/composables/interactions";
 
 export default {
   name: "MainLayout",
@@ -180,10 +180,10 @@ export default {
         }, async () => {
           // fallback: Copenhagen
           weather.value = await fetchWeather(55.6761, 12.5683);
-          notifyNegative("Failed to fetch your location, using default.");
+          notifyWarning("Failed to fetch your location. Using default Copenhagen weather.");
         });
       } catch (error) {
-        notifyNegative("Failed to fetch weather data, using default location.");
+        notifyWarning("Failed to fetch weather data. Using weather for Copenhagen.");
         notifyNegative(error.message || "Weather data unavailable");
       }
     }

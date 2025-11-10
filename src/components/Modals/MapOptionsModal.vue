@@ -17,7 +17,7 @@
       </q-card-section>
       <q-card-actions vertical>
         <q-btn
-          label="Get weather and wind for tomorrow"
+          label="Get weather for tomorrow"
           color="secondary"
           class="q-mb-sm"
           @click="onWeather"
