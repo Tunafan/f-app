@@ -29,12 +29,12 @@
               <q-item-label>{{ user?.id || '—' }}</q-item-label>
             </q-item-section>
           </q-item>
-          <q-item>
+          <q-item v-if="user.profilePicture">
             <q-item-section>
               <q-item-label caption>
-                Nickname
+                Profile picture
               </q-item-label>
-              <q-item-label>{{ user?.nickname || '—' }}</q-item-label>
+              <q-img :src="user.profilePicture" />
             </q-item-section>
           </q-item>
         </q-list>
@@ -45,6 +45,7 @@
     </div>
   </q-page>
 </template>
+
 
 <script setup>
 import { ref, onMounted } from 'vue'
