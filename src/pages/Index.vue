@@ -85,20 +85,20 @@ const weatherError = ref(null);
 const recentActivities = ref([
   {
     icon: "place",
-    title: "Ny lokation tilføjet",
+    title: "Most recent catch location",
     description: "Esrom Sø",
     link: "/map",
   },
   {
     icon: "shopping_bag",
-    title: "Nærmeste fiskeudstyrsbutik",
-    description: "Chum Bucket - 2.5km væk",
+    title: "Nearest shop",
+    description: "Chum Bucket - 2 km",
     link: "/map",
   },
   {
     icon: "check_box",
     title: "Packing list updated",
-    description: "Pakkeliste Norge - 3 ting mangler",
+    description: "Packing List 1 - 3 items unchecked",
     link: "/packing-list",
   },
 ]);
