@@ -29,7 +29,7 @@
               <q-item-label>{{ user?.id || '—' }}</q-item-label>
             </q-item-section>
           </q-item>
-          <q-item v-if="user.profilePicture">
+          <q-item v-if="user?.profilePicture">
             <q-item-section>
               <q-item-label caption>
                 Profile picture

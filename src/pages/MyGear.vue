@@ -169,12 +169,20 @@ onMounted( () => {
   const cached = localStorage.getItem('gearList')
   if (cached) {
     try {
-      gearList.value = JSON.parse(cached)
+      console.log('Loading gear list from cache...')
+      console.log(JSON.parse(cached));
+
+      gearList.value = JSON.parse(cached);
+      console.log('Loaded gear list from cache.')
     } catch (error) {
       console.error('Failed to parse cached gear list:', error)
+      gearList.value = [];
     }
-  getUserGear()
-}})
+  } else {
+    console.log('Fetching gear from database')
+    getUserGear()
+  }
+})
 
 async function getUserGear() {
   loading.value = true
